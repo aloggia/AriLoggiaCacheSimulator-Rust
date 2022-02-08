@@ -1,3 +1,7 @@
+use bitlab::ExtractBitsFromIntegralTypes;
+use std::ptr::write_bytes;
+
+
 pub struct Memory {
     size: u8,
     mem: [u8; (size * 1000) as usize],
@@ -14,8 +18,8 @@ impl Memory {
         self.mem[addr]
     }
     //pub fn write_byte
-    pub fn write_byte(&mut self, addr: usize, value: u8) {
-        self.mem[addr] = value;
+    pub fn write_byte(&mut self, addr: usize, byte: u8) {
+        self.mem[addr] = byte;
     }
     // pub fn read_word -> u32
     /*
@@ -28,8 +32,16 @@ impl Memory {
     }
     //pub fn write_word
     /*
-    Take in a 32 bit word,
-    break it into 4 bytes
+    Take in a 32 bit word and an address to write it too
     call write_byte 4 times starting at specified memory location
+    For each call take the specific byte and write it to addr
+    Use little endian, so start at bit offset 24, then offset 16, then 8, then 0
+    increment addr by 1 to write to the next memory cell
      */
+    pub fn write_word(&mut self, mut addr: usize, word: u32) {
+        for pos in (0..=3).rev() {
+            write_byte(addr, word.get_u8((8 * pos), 8).unwrap());
+            addr += 1;
+        }
+    }
 }
