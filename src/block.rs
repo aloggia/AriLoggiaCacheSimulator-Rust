@@ -18,17 +18,31 @@ impl Block {
     pub fn new(size: u8) -> Block {
         Block {
             tag: -1,
-            size: size,
+            size,
             mem: Vec::with_capacity(size as usize),
             is_dirty: true,
             is_valid: false
         }
     }
-    //Need a read_byte, write_byte, read_word, write_word
-    fn get_tag() {
-
-    }
     // get_tag, set_tag
+    fn get_tag(&self) -> i16 {
+        self.tag
+    }
+    fn set_tag(&mut self, new_tag: i16) {
+        self.tag = new_tag;
+    }
     // get_dirty, set_dirty
+    fn get_dirty(&self) -> bool {
+        self.is_dirty
+    }
+    fn set_dirty(&mut self, new_flag: bool) {
+        self.is_dirty = new_flag;
+    }
     // get_valid, set_valid
+    fn get_valid(&self) -> bool {
+        self.is_valid
+    }
+    fn set_valid(&mut self, new_flag: bool) {
+        self.is_valid = new_flag;
+    }
 }

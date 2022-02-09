@@ -10,5 +10,7 @@ fn main() {
     const BLOCK_SIZE: u8 = 64;
     const ASSOCIATIVITY: u8 = 4;
 
+    let mut new_vec = vec![1,2,3,4];
+
 
 }

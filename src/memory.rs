@@ -4,17 +4,19 @@ use bitlab::ExtractBitsFromIntegralTypes;
     fn read
 }
 */
-//const MEMORY_SIZE: usize = 64;
+const ADDRESS_SIZE: usize = 16;
+
+
 pub struct Memory {
-    size: usize,
+    size: u16,
     mem: Vec<u8>
 }
 
 impl Memory {
-    fn new(capacity: usize) -> Memory {
+    fn new() -> Memory {
         Memory {
-            size: capacity,
-            mem: Vec::with_capacity(capacity * 1000)
+            size: 2_i32.pow(ADDRESS_SIZE as u32) as u16,
+            mem: Vec::with_capacity(2_i32.pow(ADDRESS_SIZE as u32) as usize)
         }
     }
     pub fn read_byte(&self, addr: u16) -> u8 {
@@ -48,7 +50,7 @@ impl Memory {
             addr += 1;
         }
     }
-    fn get_size(&self) -> usize {
+    fn get_size(&self) -> u16 {
         self.size
     }
 }
