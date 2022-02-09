@@ -1,4 +1,4 @@
-use bitlab::ExtractBitsFromIntegralTypes;
+
 
 pub struct Block {
     //Because all addressing uses 16 bit numbers, that provides an upper constraint on the size of the
@@ -7,7 +7,7 @@ pub struct Block {
     //size of each block
     size: u8,
     //array to hold block memory
-    mem: [u8; size],
+    mem: Vec<u8>,
     //bool dirty/clean
     is_dirty: bool,
     //bool valid/invalid
@@ -15,16 +15,19 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(size: u8) {
-        let mut block = Block {
+    pub fn new(size: u8) -> Block {
+        Block {
             tag: -1,
-            size,
-            mem: [0, size],
+            size: size,
+            mem: Vec::with_capacity(size as usize),
             is_dirty: true,
             is_valid: false
-        };
+        }
     }
     //Need a read_byte, write_byte, read_word, write_word
+    fn get_tag() {
+
+    }
     // get_tag, set_tag
     // get_dirty, set_dirty
     // get_valid, set_valid

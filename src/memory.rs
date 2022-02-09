@@ -1,32 +1,37 @@
 use bitlab::ExtractBitsFromIntegralTypes;
 
-
+/*trait ByteManip {
+    fn read
+}
+*/
+//const MEMORY_SIZE: usize = 64;
 pub struct Memory {
-    size: u8,
-    mem: [u8; (size * 1000) as usize],
+    size: usize,
+    mem: Vec<u8>
 }
 
 impl Memory {
-    pub fn new(capacity: u8) -> Memory {
-        let mut memory = Memory {
+    fn new(capacity: usize) -> Memory {
+        Memory {
             size: capacity,
-            mem: [0, (capacity * 1000)],
-        };
+            mem: Vec::with_capacity(capacity * 1000)
+        }
     }
     pub fn read_byte(&self, addr: u16) -> u8 {
-        self.mem[addr]
+        self.mem[addr as usize]
     }
     //pub fn write_byte
     pub fn write_byte(&mut self, addr: u16, byte: u8) {
-        self.mem[addr] = byte;
+        self.mem[addr as usize] = byte;
     }
     // pub fn read_word -> u32
     /*
     Read word takes in an addr, then calls read byte 4 times, and returns a u32 word
      */
     pub fn read_word(&self, addr: u16) -> u32 {
-        let mut return_word: u32;
-        return_word = read_byte(addr) + 256 * (read_byte(addr + 1) + 256 * (read_byte(addr + 2) + 256 * read_byte(addr + 3)));
+        let return_word: u32;
+        return_word = (Memory::read_byte(self, addr) as u32) + 256 * ((Memory::read_byte(self,addr + 1) as u32) + 256 *
+            ((Memory::read_byte(self,addr + 2) as u32) + 256 * (Memory::read_byte(self,addr + 3) as u32)));
         return return_word
     }
     //pub fn write_word
@@ -39,8 +44,13 @@ impl Memory {
      */
     pub fn write_word(&mut self, mut addr: u16, word: u32) {
         for pos in (0..=3).rev() {
-            write_byte(addr, word.get_u8((8 * pos), 8).unwrap());
+            Memory::write_byte(self, addr, word.get_u8(8 * pos, 8).unwrap());
             addr += 1;
         }
     }
+    fn get_size(&self) -> usize {
+        self.size
+    }
 }
+
+//Add assertion that memory[i] is the start of a word, ie memory[i] = i/4
