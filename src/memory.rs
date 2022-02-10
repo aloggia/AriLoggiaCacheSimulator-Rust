@@ -1,4 +1,5 @@
 use bitlab::ExtractBitsFromIntegralTypes;
+use crate::align_address;
 
 /*trait ByteManip {
     fn read
@@ -30,7 +31,8 @@ impl Memory {
     /*
     Read word takes in an addr, then calls read byte 4 times, and returns a u32 word
      */
-    pub fn read_word(&self, addr: u16) -> u32 {
+    pub fn read_word(&self, mut addr: u16) -> u32 {
+        addr = align_address!(addr);
         let return_word: u32;
         return_word = (Memory::read_byte(self, addr) as u32) + 256 * ((Memory::read_byte(self,addr + 1) as u32) + 256 *
             ((Memory::read_byte(self,addr + 2) as u32) + 256 * (Memory::read_byte(self,addr + 3) as u32)));
@@ -45,6 +47,7 @@ impl Memory {
     increment addr by 1 to write to the next memory cell
      */
     pub fn write_word(&mut self, mut addr: u16, word: u32) {
+        addr = align_address!(addr);
         for pos in (0..=3).rev() {
             Memory::write_byte(self, addr, word.get_u8(8 * pos, 8).unwrap());
             addr += 1;

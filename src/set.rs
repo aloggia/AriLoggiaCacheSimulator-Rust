@@ -24,14 +24,14 @@ impl Set {
         }
         Set {
             associativity,
-            tag_queue: vec![-1, associativity as i8],
+            tag_queue: vec![-1, (associativity as i8).into()],
             blocks: block_set,
         }
     }
     /* TODO:
     1. Function to move a block into the set - check
-    2. Function to check the tag queue for a block
-    3. Function to update the tag queue
+    2. Function to check the tag queue for a block - check
+    3. Function to update the tag queue - TODO IN PART TWO
      */
     fn move_in (&mut self, move_block: Block) {
         // check the tag_queue for the oldest block - don't need to do yet
