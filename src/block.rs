@@ -1,4 +1,5 @@
-
+use bitlab::ExtractBitsFromIntegralTypes;
+use crate::align_address;
 
 pub struct Block {
     //Because all addressing uses 16 bit numbers, that provides an upper constraint on the size of the
@@ -19,7 +20,8 @@ impl Block {
         Block {
             tag: -1,
             size,
-            mem: Vec::with_capacity(size as usize),
+            //mem: Vec::with_capacity(size as usize),
+            mem: vec![0; size as usize],
             is_dirty: true,
             is_valid: false
         }
@@ -44,5 +46,38 @@ impl Block {
     }
     fn set_valid(&mut self, new_flag: bool) {
         self.is_valid = new_flag;
+    }
+    fn read_byte(&self, addr: u32) -> u8 {
+        self.mem[addr as usize]
+    }
+    //pub fn write_byte
+    fn write_byte(&mut self, addr: u32, byte: u8) {
+        self.mem[addr as usize] = byte;
+    }
+    // pub fn read_word -> u32
+    /*
+    Read word takes in an addr, then calls read byte 4 times, and returns a u32 word
+     */
+    fn read_word(&self, mut addr: u32) -> u32 {
+        addr = align_address!(addr);
+        let return_word: u32;
+        return_word = (self.read_byte(addr) as u32) + 256 * ((self.read_byte(addr + 1) as u32) + 256 *
+            ((self.read_byte(addr + 2) as u32) + 256 * (self.read_byte(addr + 3) as u32)));
+        return return_word
+    }
+    //pub fn write_word
+    /*
+    Take in a 32 bit word and an address to write it too
+    call write_byte 4 times starting at specified memory location
+    For each call take the specific byte and write it to addr
+    Use little endian, so start at bit offset 24, then offset 16, then 8, then 0
+    increment addr by 1 to write to the next memory cell
+     */
+    fn write_word(&mut self, mut addr: u32, word: u32) {
+        addr = align_address!(addr);
+        for pos in (0..=3).rev() {
+            self.write_byte(addr, word.get_u8(8 * pos, 8).unwrap());
+            addr += 1;
+        }
     }
 }

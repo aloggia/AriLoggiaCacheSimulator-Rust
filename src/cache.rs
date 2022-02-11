@@ -1,16 +1,19 @@
 //Collection of sets
 use bitlab::ExtractBitsFromIntegralTypes;
 use crate::set::Set;
+use crate::memory::Memory;
 use crate::align_address;
 
 pub struct Cache {
-    address: u16,
+    block_size: u8,
     num_sets: u8,
     sets: Vec<Set>,
+    is_write_back: bool,
+    memory: Memory,
 }
 
 impl Cache {
-    pub fn new(cache_size: u8, block_size: u8, associativity: u8) -> Cache {
+    pub fn new(cache_size: u8, block_size: u8, associativity: u8, write_back: bool) -> Cache {
         let num_of_blocks: u8 = cache_size / block_size;
         let num_of_sets: u8 = num_of_blocks / associativity;
         let mut set_vec: Vec<Set> = vec![];
@@ -18,9 +21,11 @@ impl Cache {
             set_vec.push(Set::new(associativity, block_size));
         }
         Cache {
-            address: 0,
+            block_size,
             num_sets: num_of_sets,
             sets: set_vec,
+            is_write_back: write_back,
+            memory: Memory::new(),
         }
     }
     /*
@@ -42,8 +47,34 @@ impl Cache {
     }
 
     // Read word function
-    /*fn read_word(&self, addr: u16) -> u32 {
-        align_address!(addr);
-    }*/
+    fn read_word_from_cache(&self, addr: u16) -> u32 {
+        let mut offset: u16 = 0;
+        let mut tag: u16 = 0;
+        let mut address_tuple: (u16, u16) = (tag, offset);
+        let block_number: u16 = (addr - (addr % 64)) / 64;
+        let set_num: u16 = block_number % (self.sets.len() as u16);
+        address_tuple = Cache::address_as_tuple(addr, self.block_size);
+        self.sets[set_num].get_block(0).read_word(addr)
+            //[0].mem[addr]
+    }
     // Write word function
+    fn write_word_from_cache(&mut self, addr: u16, word: u32) {
+        let mut offset: u16 = 0;
+        let mut tag: u16 = 0;
+        let mut address_tuple: (u16, u16) = (tag, offset);
+        let block_number: u16 = (addr - (addr % 64)) / 64;
+        let set_num: u16 = block_number % self.sets.len();
+        address_tuple = Cache::address_as_tuple(addr, self.block_size);
+        self.sets[set_num].blocks = word;
+    }
+    // General function that calls read/write word depending on the instruction
+
+    //pub fn read_word(addr: u16) -> u32 {
+
+    //}
+
+    pub fn write_word(addr: u16, word: u32) {
+
+    }
+
 }

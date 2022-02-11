@@ -9,29 +9,31 @@ const ADDRESS_SIZE: usize = 16;
 
 
 pub struct Memory {
-    size: u16,
+    size: u32,
     mem: Vec<u8>
 }
 
 impl Memory {
-    fn new() -> Memory {
+    pub fn new() -> Memory {
         Memory {
-            size: 2_i32.pow(ADDRESS_SIZE as u32) as u16,
-            mem: Vec::with_capacity(2_i32.pow(ADDRESS_SIZE as u32) as usize)
+            size: 2_u32.pow(ADDRESS_SIZE as u32) as u32,
+            //2_i32.pow(ADDRESS_SIZE as u32) as u16,
+            mem: vec![0; 2_u32.pow(ADDRESS_SIZE as u32) as usize]
+            // Vec::with_capacity(2_u32.pow(ADDRESS_SIZE as u32) as usize)
         }
     }
-    pub fn read_byte(&self, addr: u16) -> u8 {
+    pub fn read_byte(&self, addr: u32) -> u8 {
         self.mem[addr as usize]
     }
     //pub fn write_byte
-    pub fn write_byte(&mut self, addr: u16, byte: u8) {
+    pub fn write_byte(&mut self, addr: u32, byte: u8) {
         self.mem[addr as usize] = byte;
     }
     // pub fn read_word -> u32
     /*
     Read word takes in an addr, then calls read byte 4 times, and returns a u32 word
      */
-    pub fn read_word(&self, mut addr: u16) -> u32 {
+    pub fn read_word(&self, mut addr: u32) -> u32 {
         addr = align_address!(addr);
         let return_word: u32;
         return_word = (Memory::read_byte(self, addr) as u32) + 256 * ((Memory::read_byte(self,addr + 1) as u32) + 256 *
@@ -46,14 +48,14 @@ impl Memory {
     Use little endian, so start at bit offset 24, then offset 16, then 8, then 0
     increment addr by 1 to write to the next memory cell
      */
-    pub fn write_word(&mut self, mut addr: u16, word: u32) {
+    pub fn write_word(&mut self, mut addr: u32, word: u32) {
         addr = align_address!(addr);
         for pos in (0..=3).rev() {
             Memory::write_byte(self, addr, word.get_u8(8 * pos, 8).unwrap());
             addr += 1;
         }
     }
-    fn get_size(&self) -> u16 {
+    pub fn get_size(&self) -> u32 {
         self.size
     }
 }

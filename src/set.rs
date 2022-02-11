@@ -44,5 +44,8 @@ impl Set {
         if self.tag_queue[0] == tag_to_check { true } else { false }
 
     }
+    fn get_block(&self, block_number: usize) -> &Block {
+        &self.blocks[block_number]
+    }
 
 }
