@@ -28,6 +28,7 @@ impl Set {
             blocks: block_set,
         }
     }
+    // Impl copy constructor
     /* TODO:
     1. Function to move a block into the set - check
     2. Function to check the tag queue for a block - check
@@ -44,7 +45,7 @@ impl Set {
         if self.tag_queue[0] == tag_to_check { true } else { false }
 
     }
-    fn get_block(&self, block_number: usize) -> &Block {
+    pub(crate) fn get_block(&mut self, block_number: usize) -> &Block {
         &self.blocks[block_number]
     }
 
